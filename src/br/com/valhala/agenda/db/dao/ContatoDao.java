@@ -9,24 +9,23 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.mysql.jdbc.Statement;
-
 import br.com.valhala.agenda.modelo.Contato;
 import br.com.valhala.agenda.modelo.Telefone;
 import br.com.valhala.agenda.modelo.enums.EnumTipoTelefone;
 
 public class ContatoDao {
 
-    private static final String SQL_INSERE_TELEFONE_CONTATO   = "INSERT INTO telefone (ddd, numero, tipo, id_contato) VALUES (?, ?, ?, ?)";
-    private static final String SQL_ATUALIZA_CONTATO          = "UPDATE contato SET nome = ? WHERE id = ?";
-    private static final String SQL_ATUALIZA_TELEFONE_CONTATO = "UPDATE telefone SET ddd = ?, numero = ?, tipo = ? WHERE id = ?";
-    private static final String SQL_BUSCA_ID                  = "SELECT * FROM contato WHERE id = ?";
-    private static final String SQL_BUSCA_TELEFONE_CONTATO    = "SELECT * FROM telefone WHERE id_contato = ?";
-    private static final String SQL_EXCLUI_CONTATO            = "DELETE FROM contato WHERE id = ?";
-    private static final String SQL_EXCLUI_TELEFONE           = "DELETE FROM telefone WHERE id = ?";
-    private static final String SQL_EXCLUI_TELEFONES_CONTATO  = "DELETE FROM telefone WHERE id_contato = ?";
-    private static final String SQL_INSERE_CONTATO            = "INSERT INTO contato (nome) VALUES (?)";
-    private static final String SQL_LISTA                     = "SELECT * FROM contato";
+    private static final String SQL_ATUALIZA_CONTATO               = "UPDATE contato SET nome = ? WHERE id = ?";
+    private static final String SQL_ATUALIZA_TELEFONE_CONTATO      = "UPDATE telefone SET ddd = ?, numero = ?, tipo = ? WHERE id = ?";
+    private static final String SQL_BUSCA_ID                       = "SELECT * FROM contato WHERE id = ?";
+    private static final String SQL_BUSCA_TELEFONE_CONTATO         = "SELECT * FROM telefone WHERE id_contato = ?";
+    private static final String SQL_EXCLUI_CONTATO                 = "DELETE FROM contato WHERE id = ?";
+    private static final String SQL_EXCLUI_TELEFONE                = "DELETE FROM telefone WHERE id = ?";
+    private static final String SQL_EXCLUI_TELEFONES_CONTATO       = "DELETE FROM telefone WHERE id_contato = ?";
+    private static final String SQL_INSERE_CONTATO                 = "INSERT INTO contato (nome) VALUES (?)";
+    private static final String SQL_INSERE_TELEFONE_CONTATO        = "INSERT INTO telefone (ddd, numero, tipo, id_contato) VALUES (?, ?, ?, ?)";
+    private static final String SQL_LISTA                          = "SELLECT * FROM contato";
+    private static final String SQL_PESQUISA_IDS_TELEFONES_CONTATO = "SELECT id FROM telefone WHERE id_contato = ?";
 
     private Connection conexao;
 
@@ -56,16 +55,13 @@ public class ContatoDao {
         }
     }
 
-    private void atualizaTelefoneContato(Telefone telefone) {
+    private void atualizaTelefoneContato(Telefone telefone) throws SQLException {
         try (PreparedStatement stmt = conexao.prepareStatement(SQL_ATUALIZA_TELEFONE_CONTATO)) {
             stmt.setString(1, telefone.getDdd());
             stmt.setString(2, telefone.getNumero());
             stmt.setString(3, telefone.getTipo().name());
             stmt.setLong(4, telefone.getId());
             stmt.execute();
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
     }
 
@@ -95,49 +91,55 @@ public class ContatoDao {
         }
         if (contato != null) {
             bucaTelefoneContato(contato);
-
         }
         return contato;
     }
 
-    public void excluir(Long id) throws SQLException {
-        try (PreparedStatement stmt = conexao.prepareStatement(SQL_EXCLUI_TELEFONES_CONTATO)) {
-            stmt.setLong(1, id);
-            stmt.execute();
-        }
+    private void excluiContato(Long idContato) throws SQLException {
         try (PreparedStatement stmt = conexao.prepareStatement(SQL_EXCLUI_CONTATO)) {
-            stmt.setLong(1, id);
+            stmt.setLong(1, idContato);
             stmt.execute();
         }
     }
 
-    private void excluiTelefonesNaoMaisNecessarios(Collection<Long> idsDaOperacao, Contato contato) {
-        Set<Long> idsDoBanco = new HashSet<>();
-        try (PreparedStatement stmt = conexao.prepareStatement("SELECT id FROM telefone WHERE id_contato = ?")) {
+    public void excluir(Long id) throws SQLException {
+        excluiTelefones(id);
+        excluiContato(id);
+    }
+
+    private void excluiTelefones(Long idContato) throws SQLException {
+        try (PreparedStatement stmt = conexao.prepareStatement(SQL_EXCLUI_TELEFONES_CONTATO)) {
+            stmt.setLong(1, idContato);
+            stmt.execute();
+        }
+    }
+
+    private void excluiTelefonesNaoMaisNecessarios(Collection<Long> idsManipuladosNaOperacao, Contato contato)
+            throws SQLException {
+        Set<Long> idsRecuperadosBanco = new HashSet<>();
+        try (PreparedStatement stmt = conexao.prepareStatement(SQL_PESQUISA_IDS_TELEFONES_CONTATO)) {
             stmt.setLong(1, contato.getId());
             stmt.executeQuery();
             try (ResultSet rs = stmt.getResultSet()) {
                 while (rs.next()) {
-                    idsDoBanco.add(rs.getLong(1));
+                    idsRecuperadosBanco.add(rs.getLong(1));
                 }
             }
-            for (Long idNoBanco : idsDoBanco) {
-                if (!idsDaOperacao.contains(idNoBanco)) {
-                    try (PreparedStatement stmtDelete = conexao.prepareStatement(SQL_EXCLUI_TELEFONE)) {
-                        stmtDelete.setLong(1, idNoBanco);
-                        stmtDelete.execute();
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-
+        for (Long idTelefone : idsRecuperadosBanco) {
+            if (!idsManipuladosNaOperacao.contains(idTelefone)) {
+                try (PreparedStatement stmtDelete = conexao.prepareStatement(SQL_EXCLUI_TELEFONE)) {
+                    stmtDelete.setLong(1, idTelefone);
+                    stmtDelete.execute();
+                }
+            }
+        }
     }
 
     public Long insere(Contato contato) throws SQLException {
         Long idGerado = null;
-        try (PreparedStatement stmt = conexao.prepareStatement(SQL_INSERE_CONTATO, java.sql.Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement stmt = conexao.prepareStatement(SQL_INSERE_CONTATO,
+                java.sql.Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, contato.getNome());
             stmt.execute();
             try (ResultSet rs = stmt.getGeneratedKeys()) {
@@ -164,7 +166,6 @@ public class ContatoDao {
             stmtTelefone.setString(3, telefone.getTipo().name());
             stmtTelefone.setLong(4, idGerado);
             stmtTelefone.execute();
-
             try (ResultSet rsTelefone = stmtTelefone.getGeneratedKeys()) {
                 if (rsTelefone.next()) {
                     System.out.println("Telefone id " + rsTelefone.getLong(1) + " cadastrado");
@@ -173,7 +174,7 @@ public class ContatoDao {
         }
     }
 
-    private Long insereTelefoneContato(Telefone telefone, Contato contato) {
+    private Long insereTelefoneContato(Telefone telefone, Contato contato) throws SQLException {
         Long idCriado = null;
         try (PreparedStatement stmt = conexao.prepareStatement(SQL_INSERE_TELEFONE_CONTATO,
                 java.sql.Statement.RETURN_GENERATED_KEYS)) {
@@ -187,8 +188,6 @@ public class ContatoDao {
                     idCriado = rs.getLong(1);
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return idCriado;
     }

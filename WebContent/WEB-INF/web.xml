@@ -30,4 +30,9 @@
 		<url-pattern>/mvc</url-pattern>
 	</servlet-mapping>
 
+	<error-page>
+		<exception-type>javax.servlet.ServletException</exception-type>
+		<location>/WEB-INF/paginas/error.jsp</location>
+	</error-page>
+
 </web-app>

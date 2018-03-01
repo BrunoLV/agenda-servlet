@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import br.com.valhala.agenda.exceptions.WebAppException;
 import br.com.valhala.agenda.web.commands.Command;
 import br.com.valhala.agenda.web.commands.utils.CommandUtils;
 
@@ -56,16 +57,23 @@ public class FrontController extends HttpServlet {
 
     }
 
-    private void trataRequisicao(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            String command = request.getParameter("command");
-            if (CommandUtils.existeComando(command)) {
+    private void trataRequisicao(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        String command = request.getParameter("command");
+        if (CommandUtils.existeComando(command)) {
+            try {
                 Command comando = CommandUtils.getComando(command);
                 comando.execute(request, response);
+            } catch (InstantiationException e) {
+                throw new ServletException(e);
+            } catch (IllegalAccessException e) {
+                throw new ServletException(e);
+            } catch (ClassNotFoundException e) {
+                throw new ServletException(e);
+            } catch (WebAppException e) {
+                throw new ServletException(e);
             }
-        } catch (Exception e) {
-            // TODO: handle exception
         }
+
     }
 
 }
