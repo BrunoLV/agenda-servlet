@@ -26,6 +26,9 @@ import br.com.valhala.agenda.web.commands.Command;
  */
 public class SalvarContatoCommand implements Command {
 
+    private static final String PARAMETRO_JSON    = "json";
+    private static final String URL_ACAO_LISTAGEM = "/mvc?command=listarContatos";
+
     /*
      * (non-Javadoc)
      * @see br.com.valhala.agenda.web.commands.Command#execute(javax.servlet.http.
@@ -35,10 +38,9 @@ public class SalvarContatoCommand implements Command {
     public void execute(HttpServletRequest requisicao, HttpServletResponse resposta) throws ServletException {
         try (Connection conexao = FabricaConexoes.getIntance().getConexao()) {
             try {
-                System.out.println(requisicao.getParameter("json"));
                 ContatoDao contatoDao = new ContatoDao(conexao);
                 Gson gson = new GsonBuilder().registerTypeAdapter(Long.class, new NumberTypeAdapter()).create();
-                Contato contato = gson.fromJson(requisicao.getParameter("json"), Contato.class);
+                Contato contato = gson.fromJson(requisicao.getParameter(PARAMETRO_JSON), Contato.class);
                 if (contato.getId() == null) {
                     Long idContatoGerado = contatoDao.insere(contato);
                     System.out.println("Contato id " + idContatoGerado + " gravado no banco de dados.");
@@ -47,7 +49,7 @@ public class SalvarContatoCommand implements Command {
                     System.out.println("Contato id " + contato.getId() + " atualizado no banco dados.");
                 }
                 conexao.commit();
-                resposta.sendRedirect(requisicao.getContextPath() + "/mvc?command=listarContatos");
+                resposta.sendRedirect(requisicao.getContextPath() + URL_ACAO_LISTAGEM);
             } catch (SQLException e) {
                 throw new WebAppException(e.getMessage(), e);
             } catch (IOException e) {

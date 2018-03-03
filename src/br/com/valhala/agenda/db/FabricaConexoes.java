@@ -8,6 +8,8 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import br.com.valhala.agenda.erro.WebAppException;
+
 public class FabricaConexoes {
 
     private static final FabricaConexoes instance = new FabricaConexoes();
@@ -24,22 +26,18 @@ public class FabricaConexoes {
             Context contextoAmbiente = (Context) contextInicial.lookup("java:/comp/env");
             dataSource = (DataSource) contextoAmbiente.lookup("jdbc/agenda");
         } catch (NamingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new WebAppException(e.getMessage(), e);
         }
     }
 
     public Connection getConexao() {
-        Connection conexao = null;
         try {
-            conexao = dataSource.getConnection();
+            Connection conexao = dataSource.getConnection();
             conexao.setAutoCommit(false);
             return conexao;
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new WebAppException(e.getMessage(), e);
         }
-        return conexao;
     }
 
 }

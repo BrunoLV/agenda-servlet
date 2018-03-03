@@ -22,6 +22,10 @@ import br.com.valhala.agenda.web.commands.Command;
  */
 public class AtualizarContatoCommand implements Command {
 
+    private static final String ATRIBUTO_CONTATO  = "contato";
+    private static final String PARAMETRO_ID      = "id";
+    private static final String URL_PAGINA_EDICAO = "/WEB-INF/paginas/contato/atualiza.jsp";
+
     /*
      * (non-Javadoc)
      * @see br.com.valhala.agenda.web.commands.Command#execute(javax.servlet.http.
@@ -29,19 +33,17 @@ public class AtualizarContatoCommand implements Command {
      */
     @Override
     public void execute(HttpServletRequest requisicao, HttpServletResponse resposta) throws ServletException {
-
         try (Connection conexao = FabricaConexoes.getIntance().getConexao()) {
-            Long id = Long.parseLong(requisicao.getParameter("id"));
+            Long id = Long.parseLong(requisicao.getParameter(PARAMETRO_ID));
             ContatoDao contatoDao = new ContatoDao(conexao);
             Contato contato = contatoDao.buscaPorId(id);
-            requisicao.setAttribute("contato", contato);
-            requisicao.getRequestDispatcher("/WEB-INF/paginas/contato/atualiza.jsp").forward(requisicao, resposta);
+            requisicao.setAttribute(ATRIBUTO_CONTATO, contato);
+            requisicao.getRequestDispatcher(URL_PAGINA_EDICAO).forward(requisicao, resposta);
         } catch (SQLException e) {
             throw new WebAppException(e.getMessage(), e);
         } catch (IOException e) {
             throw new WebAppException(e.getMessage(), e);
         }
-
     }
 
 }

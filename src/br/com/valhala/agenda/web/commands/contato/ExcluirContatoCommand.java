@@ -20,6 +20,8 @@ import br.com.valhala.agenda.web.commands.Command;
  */
 public class ExcluirContatoCommand implements Command {
 
+    private static final String URL_ACAO_LISTAGEM = "/mvc?command=listarContatos";
+
     /*
      * (non-Javadoc)
      * @see br.com.valhala.agenda.web.commands.Command#execute(javax.servlet.http.
@@ -33,7 +35,7 @@ public class ExcluirContatoCommand implements Command {
                 ContatoDao contatoDao = new ContatoDao(conexao);
                 contatoDao.excluir(id);
                 conexao.commit();
-                resposta.sendRedirect(requisicao.getContextPath() + "/mvc?command=listarContatos");
+                resposta.sendRedirect(requisicao.getContextPath() + URL_ACAO_LISTAGEM);
             } catch (Exception e) {
                 conexao.rollback();
             }

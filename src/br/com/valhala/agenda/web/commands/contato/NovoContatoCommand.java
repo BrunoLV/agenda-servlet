@@ -18,6 +18,9 @@ import br.com.valhala.agenda.web.commands.Command;
  */
 public class NovoContatoCommand implements Command {
 
+    private static final String URL_ATRIBUTO_CONTATO = "contato";
+    private static final String URL_PAGINA_INCLUSAO  = "/WEB-INF/paginas/contato/novo.jsp";
+
     /*
      * (non-Javadoc)
      * @see br.com.valhala.agenda.web.commands.Command#execute(javax.servlet.http.
@@ -27,8 +30,8 @@ public class NovoContatoCommand implements Command {
     public void execute(HttpServletRequest requisicao, HttpServletResponse resposta) throws ServletException {
         try {
             Contato contato = new Contato.Builder().build();
-            requisicao.setAttribute("contato", contato);
-            requisicao.getRequestDispatcher("/WEB-INF/paginas/contato/novo.jsp").forward(requisicao, resposta);
+            requisicao.setAttribute(URL_ATRIBUTO_CONTATO, contato);
+            requisicao.getRequestDispatcher(URL_PAGINA_INCLUSAO).forward(requisicao, resposta);
         } catch (IOException e) {
             throw new WebAppException(e.getMessage(), e);
         }

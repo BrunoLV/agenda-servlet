@@ -23,6 +23,9 @@ import br.com.valhala.agenda.web.commands.Command;
  */
 public class ListaContatoCommand implements Command {
 
+    private static final String URL_PAGINA_LISTAGEM = "/WEB-INF/paginas/contato/lista.jsp";
+    private static final String ATRIBUTO_LISTA      = "contatos";
+
     /*
      * (non-Javadoc)
      * @see br.com.valhala.agenda.web.commands.Command#execute(javax.servlet.http.
@@ -30,18 +33,16 @@ public class ListaContatoCommand implements Command {
      */
     @Override
     public void execute(HttpServletRequest requisicao, HttpServletResponse resposta) throws ServletException {
-
         try (Connection conexao = FabricaConexoes.getIntance().getConexao()) {
             ContatoDao contatoDao = new ContatoDao(conexao);
             Collection<Contato> contatos = contatoDao.lista();
-            requisicao.setAttribute("contatos", contatos);
-            requisicao.getRequestDispatcher("/WEB-INF/paginas/contato/lista.jsp").forward(requisicao, resposta);
+            requisicao.setAttribute(ATRIBUTO_LISTA, contatos);
+            requisicao.getRequestDispatcher(URL_PAGINA_LISTAGEM).forward(requisicao, resposta);
         } catch (SQLException e) {
             throw new WebAppException(e.getMessage(), e);
         } catch (IOException e) {
             throw new WebAppException(e.getMessage(), e);
         }
-
     }
 
 }
