@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import br.com.valhala.agenda.db.FabricaConexoes;
 import br.com.valhala.agenda.db.dao.ContatoDao;
-import br.com.valhala.agenda.exceptions.WebAppException;
+import br.com.valhala.agenda.erro.WebAppException;
 import br.com.valhala.agenda.modelo.Contato;
 import br.com.valhala.agenda.web.commands.Command;
 
@@ -29,7 +29,7 @@ public class ListaContatoCommand implements Command {
      * HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     @Override
-    public void execute(HttpServletRequest requisicao, HttpServletResponse resposta) throws WebAppException {
+    public void execute(HttpServletRequest requisicao, HttpServletResponse resposta) throws ServletException {
 
         try (Connection conexao = FabricaConexoes.getIntance().getConexao()) {
             ContatoDao contatoDao = new ContatoDao(conexao);
@@ -37,14 +37,9 @@ public class ListaContatoCommand implements Command {
             requisicao.setAttribute("contatos", contatos);
             requisicao.getRequestDispatcher("/WEB-INF/paginas/contato/lista.jsp").forward(requisicao, resposta);
         } catch (SQLException e) {
-            System.out.println("Ocorreu um erro na integracao com banco de dados. Erro: " + e.getMessage());
-            throw new WebAppException(e);
-        } catch (ServletException e) {
-            System.out.println("Ocorreu um erro na execucao da aplicacao web. Erro: " + e.getMessage());
-            throw new WebAppException(e);
+            throw new WebAppException(e.getMessage(), e);
         } catch (IOException e) {
-            System.out.println("Ocorreu um erro na execucao da aplicacao web. Erro: " + e.getMessage());
-            throw new WebAppException(e);
+            throw new WebAppException(e.getMessage(), e);
         }
 
     }

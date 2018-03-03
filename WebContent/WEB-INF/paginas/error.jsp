@@ -4,10 +4,41 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>Erro</title>
 </head>
 <body>
-	<h1>TESTE</h1>
-	<c:out value="${javax.servlet.error.status_code}" />
+	<p>Ocorreu um erro na requisicao.</p>
+	
+	<p>Passe as informações abaixo para o administrador do sistema.</p>
+	
+	<table border="1">
+		<thead>
+			<tr>
+				<th colspan="2">Informações sobre o erro.</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<th>Status code</th>
+				<td><c:out value="${erro.statusCode}" /></td>
+			</tr>
+			<tr>
+				<th>URI</th>
+				<td><c:out value="${erro.uri}" /></td>
+			</tr>
+			<tr>
+				<th>Mensagem</th>
+				<td><c:out value="${erro.mensagem}" /></td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<br/>
+	
+	<c:url var="home" value="/mvc">
+		<c:param name="command" value="listarContatos" />
+	</c:url>
+	<a href="${home}">Volta para o Lista de Contatos</a>
+	
 </body>
 </html>

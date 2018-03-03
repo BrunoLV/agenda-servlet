@@ -52,6 +52,6 @@
 		</div>
 		<br /> <br /> <input type="submit" value="Salvar" />
 	</form>
-	<script src="${pageContext.servletContext.contextPath}/assets/js/contato/atualiza.js" type="text/javascript"></script>
+	<script src="${pageContext.servletContext.contextPath}/resources/js/contato/atualiza.js" type="text/javascript"></script>
 </body>
 </html>

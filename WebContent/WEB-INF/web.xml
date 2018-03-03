@@ -22,7 +22,12 @@
 
 	<servlet>
 		<servlet-name>mvc</servlet-name>
-		<servlet-class>br.com.valhala.agenda.web.servlets.FrontController</servlet-class>
+		<servlet-class>br.com.valhala.agenda.web.servlets.MvcServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>errorHandler</servlet-name>
+		<servlet-class>br.com.valhala.agenda.web.servlets.ManipuladorErroServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
@@ -30,9 +35,38 @@
 		<url-pattern>/mvc</url-pattern>
 	</servlet-mapping>
 
+	<servlet-mapping>
+		<servlet-name>errorHandler</servlet-name>
+		<url-pattern>/error</url-pattern>
+	</servlet-mapping>
+	
+	<filter>
+		<filter-name>uriAccessFilter</filter-name>
+		<filter-class>br.com.valhala.agenda.web.filters.UriAccessFilter</filter-class>
+	</filter>
+	
+	<filter-mapping>
+		<filter-name>uriAccessFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>ERROR</dispatcher>
+	</filter-mapping>
+
+	<error-page>
+		<error-code>404</error-code>
+		<location>/error</location>
+	</error-page>
+
 	<error-page>
 		<exception-type>javax.servlet.ServletException</exception-type>
-		<location>/WEB-INF/paginas/error.jsp</location>
+		<location>/error</location>
+	</error-page>
+
+	<error-page>
+		<exception-type>br.com.valhala.agenda.erro.WebAppException</exception-type>
+		<location>/error</location>
 	</error-page>
 
 </web-app>

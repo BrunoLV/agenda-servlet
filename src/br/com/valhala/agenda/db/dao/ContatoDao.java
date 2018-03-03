@@ -24,7 +24,7 @@ public class ContatoDao {
     private static final String SQL_EXCLUI_TELEFONES_CONTATO       = "DELETE FROM telefone WHERE id_contato = ?";
     private static final String SQL_INSERE_CONTATO                 = "INSERT INTO contato (nome) VALUES (?)";
     private static final String SQL_INSERE_TELEFONE_CONTATO        = "INSERT INTO telefone (ddd, numero, tipo, id_contato) VALUES (?, ?, ?, ?)";
-    private static final String SQL_LISTA                          = "SELLECT * FROM contato";
+    private static final String SQL_LISTA                          = "SELECT * FROM contato";
     private static final String SQL_PESQUISA_IDS_TELEFONES_CONTATO = "SELECT id FROM telefone WHERE id_contato = ?";
 
     private Connection conexao;

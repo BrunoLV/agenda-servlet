@@ -9,23 +9,22 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import br.com.valhala.agenda.exceptions.WebAppException;
 import br.com.valhala.agenda.web.commands.Command;
 import br.com.valhala.agenda.web.commands.utils.CommandUtils;
 
 /**
  * Servlet implementation class FrontController
  */
-public class FrontController extends HttpServlet {
+public class MvcServlet extends HttpServlet {
 
-    private static final long serialVersionUID = 1L;
+    private static final long   serialVersionUID = 1L;
+    private static final String COMMAND          = "command";
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public FrontController() {
+    public MvcServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     /**
@@ -57,8 +56,9 @@ public class FrontController extends HttpServlet {
 
     }
 
-    private void trataRequisicao(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-        String command = request.getParameter("command");
+    private void trataRequisicao(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String command = request.getParameter(COMMAND);
         if (CommandUtils.existeComando(command)) {
             try {
                 Command comando = CommandUtils.getComando(command);
@@ -69,9 +69,9 @@ public class FrontController extends HttpServlet {
                 throw new ServletException(e);
             } catch (ClassNotFoundException e) {
                 throw new ServletException(e);
-            } catch (WebAppException e) {
-                throw new ServletException(e);
             }
+        } else {
+            response.sendError(404);
         }
 
     }
