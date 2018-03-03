@@ -8,9 +8,7 @@
 </head>
 <body>
 	<p>Ocorreu um erro na requisicao.</p>
-	
 	<p>Passe as informações abaixo para o administrador do sistema.</p>
-	
 	<table border="1">
 		<thead>
 			<tr>
@@ -32,13 +30,10 @@
 			</tr>
 		</tbody>
 	</table>
-	
-	<br/>
-	
+	<br />
 	<c:url var="home" value="/mvc">
 		<c:param name="command" value="listarContatos" />
 	</c:url>
 	<a href="${home}">Volta para o Lista de Contatos</a>
-	
 </body>
 </html>

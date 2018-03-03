@@ -16,7 +16,7 @@ import com.google.gson.GsonBuilder;
 
 import br.com.valhala.agenda.db.FabricaConexoes;
 import br.com.valhala.agenda.db.dao.ContatoDao;
-import br.com.valhala.agenda.erro.WebAppException;
+import br.com.valhala.agenda.erro.AppException;
 import br.com.valhala.agenda.json.adapters.NumberTypeAdapter;
 import br.com.valhala.agenda.modelo.Contato;
 import br.com.valhala.agenda.web.commands.Command;
@@ -51,12 +51,12 @@ public class SalvarContatoCommand implements Command {
                 conexao.commit();
                 resposta.sendRedirect(requisicao.getContextPath() + URL_ACAO_LISTAGEM);
             } catch (SQLException e) {
-                throw new WebAppException(e.getMessage(), e);
+                throw new AppException(e.getMessage(), e);
             } catch (IOException e) {
-                throw new WebAppException(e.getMessage(), e);
+                throw new AppException(e.getMessage(), e);
             }
         } catch (SQLException e) {
-            throw new WebAppException(e.getMessage(), e);
+            throw new AppException(e.getMessage(), e);
         }
     }
 

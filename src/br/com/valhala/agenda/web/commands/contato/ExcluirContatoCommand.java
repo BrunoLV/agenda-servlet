@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import br.com.valhala.agenda.db.FabricaConexoes;
 import br.com.valhala.agenda.db.dao.ContatoDao;
-import br.com.valhala.agenda.erro.WebAppException;
+import br.com.valhala.agenda.erro.AppException;
 import br.com.valhala.agenda.web.commands.Command;
 
 /**
@@ -40,7 +40,7 @@ public class ExcluirContatoCommand implements Command {
                 conexao.rollback();
             }
         } catch (SQLException e) {
-            throw new WebAppException(e.getMessage(), e);
+            throw new AppException(e.getMessage(), e);
         }
     }
 

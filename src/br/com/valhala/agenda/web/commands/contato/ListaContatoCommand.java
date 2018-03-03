@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import br.com.valhala.agenda.db.FabricaConexoes;
 import br.com.valhala.agenda.db.dao.ContatoDao;
-import br.com.valhala.agenda.erro.WebAppException;
+import br.com.valhala.agenda.erro.AppException;
 import br.com.valhala.agenda.modelo.Contato;
 import br.com.valhala.agenda.web.commands.Command;
 
@@ -39,9 +39,9 @@ public class ListaContatoCommand implements Command {
             requisicao.setAttribute(ATRIBUTO_LISTA, contatos);
             requisicao.getRequestDispatcher(URL_PAGINA_LISTAGEM).forward(requisicao, resposta);
         } catch (SQLException e) {
-            throw new WebAppException(e.getMessage(), e);
+            throw new AppException(e.getMessage(), e);
         } catch (IOException e) {
-            throw new WebAppException(e.getMessage(), e);
+            throw new AppException(e.getMessage(), e);
         }
     }
 

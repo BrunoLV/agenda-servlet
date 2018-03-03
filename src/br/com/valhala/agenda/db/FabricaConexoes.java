@@ -8,7 +8,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import br.com.valhala.agenda.erro.WebAppException;
+import br.com.valhala.agenda.erro.AppException;
 
 public class FabricaConexoes {
 
@@ -26,7 +26,7 @@ public class FabricaConexoes {
             Context contextoAmbiente = (Context) contextInicial.lookup("java:/comp/env");
             dataSource = (DataSource) contextoAmbiente.lookup("jdbc/agenda");
         } catch (NamingException e) {
-            throw new WebAppException(e.getMessage(), e);
+            throw new AppException(e.getMessage(), e);
         }
     }
 
@@ -36,7 +36,7 @@ public class FabricaConexoes {
             conexao.setAutoCommit(false);
             return conexao;
         } catch (SQLException e) {
-            throw new WebAppException(e.getMessage(), e);
+            throw new AppException(e.getMessage(), e);
         }
     }
 

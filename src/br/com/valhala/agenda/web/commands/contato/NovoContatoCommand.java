@@ -9,7 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import br.com.valhala.agenda.erro.WebAppException;
+import br.com.valhala.agenda.erro.AppException;
 import br.com.valhala.agenda.modelo.Contato;
 import br.com.valhala.agenda.web.commands.Command;
 
@@ -33,7 +33,7 @@ public class NovoContatoCommand implements Command {
             requisicao.setAttribute(URL_ATRIBUTO_CONTATO, contato);
             requisicao.getRequestDispatcher(URL_PAGINA_INCLUSAO).forward(requisicao, resposta);
         } catch (IOException e) {
-            throw new WebAppException(e.getMessage(), e);
+            throw new AppException(e.getMessage(), e);
         }
     }
 

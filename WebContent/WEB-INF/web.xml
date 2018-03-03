@@ -34,12 +34,12 @@
 		<servlet-name>errorHandler</servlet-name>
 		<url-pattern>/error</url-pattern>
 	</servlet-mapping>
-	
+
 	<filter>
 		<filter-name>uriAccessFilter</filter-name>
 		<filter-class>br.com.valhala.agenda.web.filters.UriAccessFilter</filter-class>
 	</filter>
-	
+
 	<filter-mapping>
 		<filter-name>uriAccessFilter</filter-name>
 		<url-pattern>/*</url-pattern>
@@ -60,7 +60,7 @@
 	</error-page>
 
 	<error-page>
-		<exception-type>br.com.valhala.agenda.erro.WebAppException</exception-type>
+		<exception-type>br.com.valhala.agenda.erro.AppException</exception-type>
 		<location>/error</location>
 	</error-page>
 

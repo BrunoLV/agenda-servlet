@@ -1,10 +1,10 @@
 package br.com.valhala.agenda.erro;
 
-public class WebAppException extends RuntimeException {
+public class AppException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    public WebAppException(String message, Throwable cause) {
+    public AppException(String message, Throwable cause) {
         super(message, cause);
     }
 

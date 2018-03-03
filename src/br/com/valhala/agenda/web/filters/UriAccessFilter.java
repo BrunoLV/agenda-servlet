@@ -40,6 +40,10 @@ public class UriAccessFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
+        if (request.getCharacterEncoding() == null) {
+            request.setCharacterEncoding("UTF-8");
+        }
+
         HttpServletRequest req = (HttpServletRequest) request;
 
         String url = req.getRequestURL().toString();
