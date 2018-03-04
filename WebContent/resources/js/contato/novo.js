@@ -12,7 +12,7 @@ var moduloNovo = (function() {
 	telefones[indiceTelefone++] = telefone;
 	if (tabelaTelefones == null) {
 	    var divTabela = document.getElementById('telefones');
-	    divTabela.innerHTML = '<table id=\"tabelaTelefones\"><thead><tr><th>DDD<\/th><th>N\u00FAmero<\/th><th>Tipo<\/th><th colspan=\"2\">A\u00E7\u00F5es<\/th><\/tr><\/thead><\/table>';
+	    divTabela.innerHTML = '<table id=\"tabelaTelefones\" class=\"w3-table w3-bordered w3-striped w3-card-4\"><thead><tr class=\"w3-blue\"><th>DDD<\/th><th>N\u00FAmero<\/th><th>Tipo<\/th><th colspan=\"2\" style=\"width:10%;\">A\u00E7\u00F5es<\/th><\/tr><\/thead><\/table>';
 	    tabelaTelefones = document.getElementById('tabelaTelefones');
 	    tabelaTelefones.createTBody();
 	}
@@ -26,8 +26,8 @@ var moduloNovo = (function() {
 	celulaDdd.innerHTML = telefone.ddd;
 	celulaNumero.innerHTML = telefone.numero;
 	celulaTipo.innerHTML = telefone.tipo;
-	celulaEditar.innerHTML = '<button type="button" onclick="moduloNovo.editaTelefone(this)">Editar<\/button>';
-	celulaExcluir.innerHTML = '<button type="button" onclick="moduloNovo.removeTelefone(this)">Remover<\/button>';
+	celulaEditar.innerHTML = '<button type="button" class=\"w3-button w3-teal\" onclick="moduloNovo.editaTelefone(this)">Editar<\/button>';
+	celulaExcluir.innerHTML = '<button type="button" class=\"w3-button w3-red\" onclick="moduloNovo.removeTelefone(this)">Remover<\/button>';
 	document.getElementById('ddd').value = '';
 	document.getElementById('telefone').value = '';
 	document.getElementById('tipo').selectedIndex = 0;
