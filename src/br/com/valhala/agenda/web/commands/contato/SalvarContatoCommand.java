@@ -11,6 +11,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -26,6 +28,8 @@ import br.com.valhala.agenda.web.commands.Command;
  */
 public class SalvarContatoCommand implements Command {
 
+    private static final Logger LOGGER = Logger.getLogger(SalvarContatoCommand.class);
+
     private static final String PARAMETRO_JSON    = "json";
     private static final String URL_ACAO_LISTAGEM = "/mvc?command=listarContatos";
 
@@ -38,6 +42,7 @@ public class SalvarContatoCommand implements Command {
     public void execute(HttpServletRequest requisicao, HttpServletResponse resposta) throws ServletException {
         try (Connection conexao = FabricaConexoes.getIntance().getConexao()) {
             try {
+                LOGGER.info("Executando comando para salvar informacoes de contato na base do sistema.");
                 ContatoDao contatoDao = new ContatoDao(conexao);
                 Gson gson = new GsonBuilder().registerTypeAdapter(Long.class, new NumberTypeAdapter()).create();
                 Contato contato = gson.fromJson(requisicao.getParameter(PARAMETRO_JSON), Contato.class);
@@ -51,11 +56,14 @@ public class SalvarContatoCommand implements Command {
                 conexao.commit();
                 resposta.sendRedirect(requisicao.getContextPath() + URL_ACAO_LISTAGEM);
             } catch (SQLException e) {
+                LOGGER.error("Ocorreu um erro na acao de salvar informacoes de contato. Erro: " + e.getMessage(), e);
                 throw new AppException(e.getMessage(), e);
             } catch (IOException e) {
+                LOGGER.error("Ocorreu um erro na acao de salvar informacoes de contato. Erro: " + e.getMessage(), e);
                 throw new AppException(e.getMessage(), e);
             }
         } catch (SQLException e) {
+            LOGGER.error("Ocorreu um erro na acao de salvar informacoes de contato. Erro: " + e.getMessage(), e);
             throw new AppException(e.getMessage(), e);
         }
     }

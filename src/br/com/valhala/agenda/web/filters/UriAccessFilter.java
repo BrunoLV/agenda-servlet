@@ -13,10 +13,14 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author bruno
  */
 public class UriAccessFilter implements Filter {
+
+    private static final Logger LOGGER = Logger.getLogger(UriAccessFilter.class);
 
     /**
      *
@@ -52,8 +56,9 @@ public class UriAccessFilter implements Filter {
         boolean isRecursoEstatico = url.contains("/resources/");
 
         if (!isRecursoEstatico) {
-            System.out.println("Acessando Uri: " + url + (queryString != null ? ("/" + queryString) : "")
-                    + " realizada dentro da Sessao " + req.getSession(true).getId());
+            LOGGER.info(
+                    "Uri: " + url + (queryString != null ? ("/" + queryString) : "") + " realizada dentro da Sessao "
+                            + req.getSession(true).getId() + " com Metodo: " + req.getMethod());
         }
 
         chain.doFilter(request, response);
