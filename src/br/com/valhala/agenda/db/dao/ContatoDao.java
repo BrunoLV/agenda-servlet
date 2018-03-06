@@ -159,18 +159,12 @@ public class ContatoDao {
     }
 
     private void insereTelefone(Long idGerado, Telefone telefone) throws SQLException {
-        try (PreparedStatement stmtTelefone = conexao.prepareStatement(SQL_INSERE_TELEFONE_CONTATO,
-                java.sql.Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement stmtTelefone = conexao.prepareStatement(SQL_INSERE_TELEFONE_CONTATO)) {
             stmtTelefone.setString(1, telefone.getDdd());
             stmtTelefone.setString(2, telefone.getNumero());
             stmtTelefone.setString(3, telefone.getTipo().name());
             stmtTelefone.setLong(4, idGerado);
             stmtTelefone.execute();
-            try (ResultSet rsTelefone = stmtTelefone.getGeneratedKeys()) {
-                if (rsTelefone.next()) {
-                    System.out.println("Telefone id " + rsTelefone.getLong(1) + " cadastrado");
-                }
-            }
         }
     }
 
